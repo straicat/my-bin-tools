@@ -81,11 +81,11 @@ func convertToAvif(inputPath, outputPath, ext string) error {
 
 	switch ext {
 	case ".gif":
-		cmd = exec.Command("ffmpeg", "-i", inputPath, "-vsync", "vfr", "-pix_fmt", "rgb8", "-loop", "0", "-c:v", "libaom-av1", "-crf", "32", outputPath)
+		cmd = exec.Command("ffmpeg", "-i", inputPath, "-vf", "scale=w=min(940\\,iw):h=-2", "-vsync", "vfr", "-pix_fmt", "rgb8", "-loop", "0", "-c:v", "libaom-av1", "-crf", "32", outputPath)
 	case ".png":
-		cmd = exec.Command("ffmpeg", "-i", inputPath, "-f", "lavfi", "-i", "color=white:s=1x1", "-filter_complex", "[1][0]scale2ref[bg][img];[bg][img]overlay", "-c:v", "libaom-av1", "-pix_fmt", "yuv420p", "-crf", "32", outputPath)
+		cmd = exec.Command("ffmpeg", "-i", inputPath, "-f", "lavfi", "-i", "color=white:s=1x1", "-filter_complex", "[1][0]scale2ref[bg][img];[bg][img]overlay,scale=w=min(940\\,iw):h=-2", "-c:v", "libaom-av1", "-pix_fmt", "yuv420p", "-crf", "32", outputPath)
 	default:
-		cmd = exec.Command("ffmpeg", "-i", inputPath, "-c:v", "libaom-av1", "-crf", "32", outputPath)
+		cmd = exec.Command("ffmpeg", "-i", inputPath, "-vf", "scale=w=min(940\\,iw):h=-2", "-c:v", "libaom-av1", "-crf", "32", outputPath)
 	}
 
 	return cmd.Run()
